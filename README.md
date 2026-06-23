@@ -1,43 +1,239 @@
-# Astro Starter Kit: Minimal
+# My Portfolio | Blog Site
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A minimalist developer portfolio built with Astro and Tailwind CSS.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The site serves as a central place to showcase my projects, technical writing, skills, and engineering journey as I explore backend systems, distributed systems, and data infrastructure.
 
-## 🚀 Project Structure
+## Features
 
-Inside of your Astro project, you'll see the following folders and files:
+* Responsive portfolio website
+* Project showcase section
+* Technical blog system powered by Markdown
+* Custom blog layout
+* Dark theme with orange accent palette
+* Skills and education sections
+* Contact links and resume access
+* Custom 404 page
+* SEO metadata
+* Active navigation state
+* Static site generation with Astro
+
+## Tech Stack
+
+### Frontend
+
+* Astro
+* TypeScript
+* Tailwind CSS
+
+### Content
+
+* Markdown (`.md`) blog posts
+* Astro layouts
+
+### Deployment
+
+* Static site hosting (Vercel, Cloudflare Pages, Netlify, etc.)
+
+---
+
+## Project Structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+├── components/
+│   ├── BlogCard.astro
+│   └── ProjectCard.astro
+│
+├── data/
+│   ├── profile.json
+│   └── projects.json
+│
+├── layouts/
+│   ├── Layout.astro
+│   └── BlogLayout.astro
+│
+├── pages/
+│   ├── index.astro
+│   ├── blogs.astro
+│   ├── 404.astro
+│   └── blogs/
+│       ├── first-post.md
+│       └── ...
+│
+├── styles/
+│   └── global.css
+│
+└── types.ts
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+---
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Local Development
 
-Any static assets, like images, can be placed in the `public/` directory.
+Clone the repository:
 
-## 🧞 Commands
+```bash
+git clone <repository-url>
+cd portfolio
+```
 
-All commands are run from the root of the project, from a terminal:
+Install dependencies:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+npm install
+```
 
-## 👀 Want to learn more?
+Start the development server:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:4321
+```
+
+---
+
+## Build
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+---
+
+## Adding a Project
+
+Update:
+
+```text
+src/data/projects.json
+```
+
+Example:
+
+```json
+{
+  "title": "VoltStream",
+  "description": "Lakehouse-based EV charging analytics platform.",
+  "technologies": ["PySpark", "Databricks", "Delta Lake"],
+  "github": "https://github.com/username/repository"
+}
+```
+
+---
+
+## Adding a Blog Post
+
+Create a new Markdown file inside:
+
+```text
+src/pages/blogs/
+```
+
+Example:
+
+```md
+---
+layout: ../../layouts/BlogLayout.astro
+title: Building a Kafka Consumer
+description: Lessons learned while building a Kafka analytics platform.
+date: 2026-06-23
+---
+
+# Introduction
+
+Your content goes here.
+```
+
+The blog will automatically appear on:
+
+* Home page (Latest Writing section)
+* Blogs page
+
+---
+
+## Customization
+
+### Personal Information
+
+Update:
+
+```text
+src/data/profile.json
+```
+
+Includes:
+
+* Name
+* Title
+* About section
+* Skills
+* GitHub
+* LinkedIn
+* Email
+
+### Resume
+
+Replace:
+
+```text
+public/resume.pdf
+```
+
+with your latest resume.
+
+---
+
+## Version History
+
+### v1.0.0
+
+* Portfolio homepage
+* Project showcase
+* Markdown blog system
+* Custom blog layout
+* Dark theme redesign
+* Active navigation
+* SEO metadata
+* Custom 404 page
+* Responsive layout
+
+---
+
+## Future Improvements
+
+* Additional technical blog posts
+* Project screenshots
+* Open Graph image support
+* Search functionality
+* RSS feed
+* Analytics integration
+* Custom domain
+
+---
+
+## Author
+
+Monish Gowda
+
+Backend Engineer | Distributed Systems Enthusiast
+
+* GitHub: https://github.com/Monish-K-S
+* LinkedIn: https://www.linkedin.com/in/monish-k-s-418772293/
+
+---
+
+Built with Astro.
