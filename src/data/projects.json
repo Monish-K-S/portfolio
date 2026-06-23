@@ -1,0 +1,14 @@
+[
+  {
+    "title": "VoltStream",
+    "description": "Lakehouse-based EV charging analytics platform built using Databricks and Delta Lake.",
+    "technologies": ["PySpark", "Databricks", "Delta Lake"],
+    "github": "https://github.com/..."
+  },
+  {
+    "title": "Kafka Log Analytics",
+    "description": "Kafka-based log analytics platform built with Spring Boot.",
+    "technologies": ["Java", "Spring Boot", "Kafka"],
+    "github": "https://github.com/..."
+  }
+]

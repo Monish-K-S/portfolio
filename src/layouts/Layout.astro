@@ -1,0 +1,51 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Monish Gowda</title>
+    </head>
+
+    <body>
+        <nav class="border-b">
+            <div class="max-w-4xl mx-auto px-6 py-4">
+                <div class="flex justify-center items-center gap-8 text-sm">
+                    <a href="/" class="hover:underline">
+                        Home
+                    </a>
+
+                    <a href="/blogs" class="hover:underline">
+                        Blogs
+                    </a>
+
+                    <a
+                        href="/resume.pdf"
+                        target="_blank"
+                        class="hover:underline"
+                    >
+                        Resume
+                    </a>
+
+                    <a
+                        href="https://github.com/monishgowda"
+                        target="_blank"
+                        class="hover:underline"
+                    >
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <slot />
+        </main>
+
+        <footer class="max-w-4xl mx-auto px-6 py-8 text-sm text-gray-500">
+            © 2026 Monish Gowda
+        </footer>
+    </body>
+</html>

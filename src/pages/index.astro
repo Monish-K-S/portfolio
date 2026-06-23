@@ -1,17 +1,199 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+
+import profileData from "../data/profile.json";
+import projectsData from "../data/projects.json";
+
+import type { Profile, Project } from "../types";
+
+const profile = profileData as Profile;
+const projects = projectsData as Project[];
+
+const blogPosts = Object.values(
+    import.meta.glob("./blogs/*.md", { eager: true})
+);
+
+blogPosts.sort(
+  (a: any, b: any) =>
+  new Date(b.frontmatter.date).getTime()-
+  new Date(a.frontmatter.date).getTime()
+);
+
+const latestPosts = blogPosts.slice(0,3);
+
 
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+    <h1 class="text-5xl font-bold">
+        {profile.name}
+    </h1>
+
+    <p class="mt-4 text-xl text-gray-600">
+        {profile.title}
+    </p>
+
+    <div class="mt-6 flex gap-4">
+        <a
+            href={profile.github}
+            class="underline"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            GitHub
+        </a>
+
+        <a
+            href={profile.linkedin}
+            class="underline"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            LinkedIn
+        </a>
+
+        <a
+            href="/resume.pdf"
+            class="underline"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Resume
+        </a>
+    </div>
+
+    <section class="mt-12">
+        <h2 class="text-2xl font-semibold">
+            About
+        </h2>
+
+        <p class="mt-4 text-gray-700">
+            {profile.about}
+        </p>
+    </section>
+
+    <section class="mt-12">
+        <h2 class="text-2xl font-semibold">
+            Projects
+        </h2>
+
+        <div class="mt-6">
+            {
+                projects.map((project) => (
+                    <ProjectCard project={project} />
+                ))
+            }
+        </div>
+    </section>
+
+    <section class="mt-16">
+            <h2 class="text-2xl font-semibold">
+                Latest Writing
+            </h2>
+
+            <div class="mt-6 space-y-4">
+                {
+                    latestPosts.map((post: any) => (
+                        <a
+                            href={post.url}
+                            class="block border rounded-lg p-4 hover:border-gray-400 transition"
+                        >
+                            <h3 class="font-medium">
+                                {post.frontmatter.title}
+                            </h3>
+
+                            <p class="mt-1 text-sm text-gray-600">
+                                {post.frontmatter.description}
+                            </p>
+                        </a>
+                    ))
+                }
+            </div>
+
+            <a
+                href="/blogs"
+                class="inline-block mt-6 underline"
+            >
+                View all posts →
+            </a>
+        </section>
+
+        <section class="mt-16">
+            <h2 class="text-2xl font-semibold">
+                Skills
+            </h2>
+
+            <div class="mt-6 flex flex-wrap gap-3">
+                {
+                    profile.skills.map((skill) => (
+                        <span
+                            class="border rounded-md px-3 py-2 text-sm"
+                        >
+                            {skill}
+                        </span>
+                    ))
+                }
+            </div>
+        </section>
+
+        <section class="mt-16">
+            <div class="mt-6 border rounded-lg p-6">
+                <h3 class="font-medium text-lg">
+                    MVJ College of Engineering
+                </h3>
+
+                <div class="mt-2 flex flex-wrap gap-4 text-gray-600">
+                    <span>B.E. Computer Science and Engineering (Data Science)</span>
+                    <span>CGPA: 9.0/10</span>
+                </div>
+
+                <p class="mt-2 text-sm text-gray-500">
+                    2023 – 2027
+                </p>
+            </div>
+        </section>
+
+        <section class="mt-16">
+            <h2 class="text-2xl font-semibold">
+                Contact
+            </h2>
+
+            <div class="mt-6 flex flex-wrap gap-6">
+                <a
+                    href={profile.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline"
+                >
+                    GitHub
+                </a>
+
+                <a
+                    href={profile.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline"
+                >
+                    LinkedIn
+                </a>
+
+                <a
+                    href={`mailto:${profile.email}`}
+                    class="underline"
+                >
+                    Email
+                </a>
+
+                <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline"
+                >
+                    Resume
+                </a>
+            </div>
+        </section>
+
+</Layout>
