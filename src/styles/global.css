@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+.blog-content {
+  color: #a1a1aa;
+  line-height: 1.9;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4 {
+  color: white;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.blog-content h2 {
+  font-size: 1.875rem;
+}
+
+.blog-content h3 {
+  font-size: 1.5rem;
+}
+
+.blog-content p {
+  margin: 1rem 0;
+}
+
+.blog-content a {
+  color: #f28705;
+}
+
+.blog-content ul,
+.blog-content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.blog-content li {
+  margin: 0.5rem 0;
+}
+
+.blog-content blockquote {
+  border-left: 3px solid #f28705;
+  padding-left: 1rem;
+  color: #d4d4d8;
+  margin: 1.5rem 0;
+}
+
+.blog-content code {
+  background: #111111;
+  border: 1px solid #27272a;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+}
+
+.blog-content pre {
+  background: #0a0a0a;
+  border: 1px solid #27272a;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}

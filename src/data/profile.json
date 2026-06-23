@@ -1,13 +1,13 @@
 {
   "name": "Monish Gowda",
-  "title": "Backend Engineer | Data Engineering Enthusiast",
-  "about": "Final-year Computer Science student focused on backend systems, distributed systems, and data engineering.",
+  "title": "Backend Engineer | Distributed Systems Enthusiast",
+  "about": "Final-year Computer Science student focused on backend engineering, distributed systems, and developer infrastructure.I enjoy building systems that process data, handle traffic, and scale from Kafka-based analytics platforms to distributed data pipelines and systems programming projects in Go. Currently exploring distributed systems design, PostgreSQL internals, Kafka, and cloud-native backend architecture.",
   "github": "https://github.com/Monish-K-S",
   "linkedin": "https://www.linkedin.com/in/monish-k-s-418772293/",
   "email": "k6mg5343@email.com",
   "skills": [
     "Go",
-    "JAVA",
+    "Java",
     "Spring Boot",
     "PostgreSQL",
     "Kafka",

@@ -1,5 +1,5 @@
 ---
-layout: ../../layouts/Layout.astro
+layout: ../../layouts/BlogLayout.astro
 title: My First Blog
 description: Testing Astro blogs.
 date: 2026-06-23

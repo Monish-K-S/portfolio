@@ -1,38 +1,75 @@
 ---
 import "../styles/global.css";
+import profileData from "../data/profile.json";
+import type { Profile } from "../types";
+
+const profile = profileData as Profile;
+const currentPath = Astro.url.pathname;
 ---
 
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <title>Monish Gowda</title>
+
+        <title>Monish Gowda | Backend Engineer</title>
+
+        <meta
+            name="description"
+            content="Backend engineer focused on distributed systems, Go, Java, Kafka, PostgreSQL and scalable backend systems."
+        />
+
+        <meta
+            name="keywords"
+            content="Monish Gowda, Backend Engineer, Go, Java, Kafka, PostgreSQL, Distributed Systems, Software Engineer"
+        />
+
+        <meta name="author" content="Monish Gowda" />
+
+        <meta property="og:title" content="Monish Gowda | Backend Engineer" />
+
+        <meta
+            property="og:description"
+            content="Backend engineer focused on distributed systems, Go, Java, Kafka, PostgreSQL and scalable backend systems."
+        />
+
+        <meta property="og:type" content="website" />
     </head>
 
-    <body>
-        <nav class="border-b">
-            <div class="max-w-4xl mx-auto px-6 py-4">
+    <body class="bg-black text-white min-h-screen">
+        <nav class="border-b border-zinc-900">
+            <div class="max-w-4xl mx-auto px-6 py-5">
                 <div class="flex justify-center items-center gap-8 text-sm">
-                    <a href="/" class="hover:underline">
+                    <a
+                        href="/"
+                        class={currentPath === "/"
+                                ? "text-[#F28705]"
+                                : "text-zinc-400 hover:text-[#F28705] transition"}
+                    >
                         Home
                     </a>
 
-                    <a href="/blogs" class="hover:underline">
+                    <a
+                        href="/blogs"
+                        class={currentPath === "/blogs"
+                                ? "text-[#F28705]"
+                                : "text-zinc-400 hover:text-[#F28705] transition"}
+                    >
                         Blogs
                     </a>
 
                     <a
                         href="/resume.pdf"
                         target="_blank"
-                        class="hover:underline"
+                        class="text-zinc-400 hover:text-[#F28705] transition"
                     >
                         Resume
                     </a>
 
                     <a
-                        href="https://github.com/monishgowda"
+                        href={profile.github}
                         target="_blank"
-                        class="hover:underline"
+                        class="text-zinc-400 hover:text-[#F28705] transition"
                     >
                         GitHub
                     </a>
@@ -40,11 +77,13 @@ import "../styles/global.css";
             </div>
         </nav>
 
-        <main class="max-w-4xl mx-auto px-6 py-12">
+        <main class="max-w-4xl mx-auto px-6 py-16">
             <slot />
         </main>
 
-        <footer class="max-w-4xl mx-auto px-6 py-8 text-sm text-gray-500">
+        <footer
+            class="max-w-4xl mx-auto px-6 py-10 mt-24 border-t border-zinc-900 text-sm text-zinc-500"
+        >
             © 2026 Monish Gowda
         </footer>
     </body>

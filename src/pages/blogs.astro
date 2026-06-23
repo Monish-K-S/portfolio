@@ -1,31 +1,48 @@
 ---
-
 import Layout from "../layouts/Layout.astro";
 import BlogCard from "../components/BlogCard.astro";
 
 const posts = Object.values(
-  import.meta.glob("./blogs/*.md", { eager: true })
+    import.meta.glob("./blogs/*.md", { eager: true })
 );
+
 posts.sort(
-  (a: any, b: any) =>
-    new Date(b.frontmatter.date).getTime() -
-    new Date(a.frontmatter.date).getTime()
+    (a: any, b: any) =>
+        new Date(b.frontmatter.date).getTime() -
+        new Date(a.frontmatter.date).getTime()
 );
 ---
 
 <Layout>
-  <h1 class="text-4xl font-bold">Blogs</h1>
+    <section>
+        <p
+            class="text-[#F28705] text-sm tracking-widest font-semibold uppercase"
+        >
+            Writing
+        </p>
 
-  <div class="mt-8 space-y-6">
-    {
-      posts.map((post: any) => (
-        <BlogCard
-          title={post.frontmatter.title}
-          description={post.frontmatter.description}
-          date={post.frontmatter.date}
-          url={post.url}
-        />
-      ))
-    }
-  </div>
+        <h1 class="mt-2 text-6xl font-bold tracking-tight text-white">
+            Blogs
+        </h1>
+
+        <p class="mt-4 max-w-2xl text-zinc-400 leading-8">
+            Notes, project write-ups, engineering lessons, and things I learn
+            while building software.
+        </p>
+    </section>
+
+    <section class="mt-20">
+        <div class="space-y-6">
+            {
+                posts.map((post: any) => (
+                    <BlogCard
+                        title={post.frontmatter.title}
+                        description={post.frontmatter.description}
+                        date={post.frontmatter.date}
+                        url={post.url}
+                    />
+                ))
+            }
+        </div>
+    </section>
 </Layout>
