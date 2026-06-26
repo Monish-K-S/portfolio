@@ -105,6 +105,17 @@ const latestPosts = blogPosts.slice(0, 3);
                         href={post.url}
                         class="block bg-[#0A0A0A] border border-zinc-800 rounded-2xl p-6 transition hover:-translate-y-1 hover:border-[#F28705]"
                     >
+                        {
+                                post.frontmatter.cover && (
+                                    <div class="mb-6 h-56 overflow-hidden rounded-xl border border-zinc-800">
+                                        <img
+                                            src={post.frontmatter.cover}
+                                            alt={post.frontmatter.title}
+                                            class="h-full w-full object-cover object-top"
+                                        />
+                                    </div>
+                                )
+                            }
                         <h3 class="text-xl font-bold text-white">
                             {post.frontmatter.title}
                         </h3>
@@ -140,7 +151,7 @@ const latestPosts = blogPosts.slice(0, 3);
             {
                 Object.entries(profile.skills).map(([category, skills]) => (
                     <div>
-                        <h3 class="text-sm uppercase tracking-widest text-zinc-500">
+                        <h3 class="text-sm uppercase tracking-widest text-[#F28705]">
                             {category}
                         </h3>
 

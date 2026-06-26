@@ -5,8 +5,8 @@ export interface Profile {
   github: string;
   linkedin: string;
   email: string;
-  resume: string;
-  skills: string[];
+  resume?: string;
+  skills: Record<string, string[]>;
 }
 
 export interface Project {
@@ -16,6 +16,7 @@ export interface Project {
   github: string;
   demo?: string;
   technologies: string[];
+  image?: string;
 }
 
 export interface BlogPost {
@@ -23,4 +24,5 @@ export interface BlogPost {
   description: string;
   date: string;
   url: string;
+  cover?: string;
 }

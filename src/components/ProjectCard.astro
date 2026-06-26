@@ -11,6 +11,17 @@ const { project } = Astro.props;
 <div
     class="mt-6 bg-[#0A0A0A] border border-zinc-800 rounded-2xl p-6 transition hover:-translate-y-1 hover:border-[#F28705]"
 >
+    {
+        project.image && (
+            <div class="mb-6 h-56 overflow-hidden rounded-xl border border-zinc-800">
+                <img
+                    src={project.image}
+                    alt={project.title}
+                    class="h-full w-full object-cover object-top"
+                />
+            </div>
+        )
+    }
     <h3 class="text-xl font-bold text-white">
         {project.title}
     </h3>

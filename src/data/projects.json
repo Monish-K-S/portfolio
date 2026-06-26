@@ -1,6 +1,7 @@
 [
   {
     "title": "Real-Time Log Analytics & Observability Platform",
+    "image": "/projects/log-analytics-architecture.png",
     "description": "Built a distributed observability platform that ingests, processes, indexes, and visualizes streaming application logs in real time using Apache Kafka, Spring Boot, PostgreSQL, Lucene, and Grafana.",
     "highlights": [
       "Event-Driven Architecture",
