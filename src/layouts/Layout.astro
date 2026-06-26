@@ -2,6 +2,8 @@
 import "../styles/global.css";
 import profileData from "../data/profile.json";
 import type { Profile } from "../types";
+import { ClientRouter } from "astro:transitions";
+
 
 
 const profile = profileData as Profile;
@@ -10,6 +12,7 @@ const currentPath = Astro.url.pathname;
 
 <html lang="en">
     <head>
+        <ClientRouter />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
 
@@ -76,7 +79,7 @@ const currentPath = Astro.url.pathname;
 
                     <a
                         href="/blogs"
-                        class={currentPath === "/blogs"
+                        class={currentPath.startsWith("/blogs")
                                 ? "text-[#F28705]"
                                 : "text-zinc-400 hover:text-[#F28705] transition"}
                     >
