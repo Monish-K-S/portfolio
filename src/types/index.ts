@@ -12,6 +12,7 @@ export interface Profile {
 export interface Project {
   title: string;
   description: string;
+  highlights: string[];
   github: string;
   demo?: string;
   technologies: string[];

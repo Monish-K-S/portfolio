@@ -1,14 +1,34 @@
 [
   {
-    "title": "VoltStream",
-    "description": "Lakehouse-based EV charging analytics platform built using Databricks and Delta Lake.",
-    "technologies": ["PySpark", "Databricks", "Delta Lake"],
-    "github": "https://github.com/..."
+    "title": "Real-Time Log Analytics & Observability Platform",
+    "description": "Built a distributed observability platform that ingests, processes, indexes, and visualizes streaming application logs in real time using Apache Kafka, Spring Boot, PostgreSQL, Lucene, and Grafana.",
+    "highlights": [
+      "Event-Driven Architecture",
+      "Observability",
+      "Full-Text Search"
+    ],
+    "technologies": [
+      "Java",
+      "Spring Boot",
+      "Apache Kafka",
+      "PostgreSQL",
+      "Apache Lucene",
+      "Grafana",
+      "Docker"
+    ],
+    "github": "https://github.com/Monish-K-S/log_analytics_platform"
   },
   {
-    "title": "Kafka Log Analytics",
-    "description": "Kafka-based log analytics platform built with Spring Boot.",
-    "technologies": ["Java", "Spring Boot", "Kafka"],
-    "github": "https://github.com/..."
+    "title": "VoltStream",
+    "description": "Designed an end-to-end lakehouse data pipeline that ingests EV charging station and weather data, implements a Medallion Architecture with Delta Lake, and produces business-ready risk analytics.",
+    "highlights": ["Medallion Architecture", "SCD Type 2", "Delta Lake"],
+    "technologies": [
+      "PySpark",
+      "Databricks",
+      "Delta Lake",
+      "Power BI",
+      "Python"
+    ],
+    "github": "https://github.com/Monish-K-S/voltstream-data-pipeline"
   }
 ]
