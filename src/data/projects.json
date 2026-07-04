@@ -20,7 +20,7 @@
     "github": "https://github.com/Monish-K-S/log_analytics_platform"
   },
   {
-    "title": "PulseDrop",
+    "title": "PulseDrop - An Incident Management System",
     "image": "/projects/pulsedrop-system-architecture.png",
     "description": "Built a secure full-stack incident management system featuring JWT authentication, role-based authorization, ownership validation, and a layered Spring Boot architecture with a React frontend.",
     "highlights": [
