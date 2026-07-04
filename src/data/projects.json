@@ -20,6 +20,27 @@
     "github": "https://github.com/Monish-K-S/log_analytics_platform"
   },
   {
+    "title": "PulseDrop",
+    "image": "/projects/pulsedrop-system-architecture.png",
+    "description": "Built a secure full-stack incident management system featuring JWT authentication, role-based authorization, ownership validation, and a layered Spring Boot architecture with a React frontend.",
+    "highlights": [
+      "JWT Authentication",
+      "Role-Based Authorization",
+      "Ownership Validation"
+    ],
+    "technologies": [
+      "Java",
+      "Spring Boot",
+      "Spring Security",
+      "JWT",
+      "PostgreSQL",
+      "React",
+      "TypeScript",
+      "Axios"
+    ],
+    "github": "https://github.com/Monish-K-S/PulseDrop"
+  },
+  {
     "title": "VoltStream",
     "description": "Designed an end-to-end lakehouse data pipeline that ingests EV charging station and weather data, implements a Medallion Architecture with Delta Lake, and produces business-ready risk analytics.",
     "highlights": ["Medallion Architecture", "SCD Type 2", "Delta Lake"],
