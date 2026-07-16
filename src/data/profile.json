@@ -7,7 +7,7 @@
   "email": "k6mg5343@email.com",
 
   "skills": {
-    "Languages": ["Java", "Go", "Python","TypeScript", "SQL"],
+    "Languages": ["Java", "Python","TypeScript", "SQL"],
     "Backend": ["Spring Boot", "REST APIs","FastAPI", "Apache Kafka"],
     "Data & Storage": ["PostgreSQL", "MySQL", "Delta Lake"],
     "DevOps & Tools": ["Docker", "Git","Github Actions", "Linux"],
