@@ -7,9 +7,10 @@
   "email": "k6mg5343@email.com",
 
   "skills": {
-    "Languages": ["Java", "Go", "Python", "SQL"],
-    "Backend": ["Spring Boot", "REST APIs", "Apache Kafka"],
-    "Data & Storage": ["PostgreSQL", "Delta Lake", "PySpark"],
-    "DevOps & Tools": ["Docker", "Git", "Linux"]
+    "Languages": ["Java", "Go", "Python","TypeScript", "SQL"],
+    "Backend": ["Spring Boot", "REST APIs","FastAPI", "Apache Kafka"],
+    "Data & Storage": ["PostgreSQL", "MySQL", "Delta Lake"],
+    "DevOps & Tools": ["Docker", "Git","Github Actions", "Linux"],
+    "Monitoring & Analytics": ["Grafana", "PowerBI", "Tableau"]
   }
 }
