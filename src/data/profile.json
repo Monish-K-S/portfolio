@@ -10,7 +10,7 @@
     "Languages": ["Java", "Python","TypeScript", "SQL"],
     "Backend": ["Spring Boot", "REST APIs","FastAPI", "Apache Kafka"],
     "Data & Storage": ["PostgreSQL", "MySQL", "Delta Lake"],
-    "DevOps & Tools": ["Docker", "Git","Github Actions", "Linux"],
+    "DevOps & Tools": ["Docker", "Git","Github", "Linux"],
     "Monitoring & Analytics": ["Grafana", "PowerBI", "Tableau"]
   }
 }
