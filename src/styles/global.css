@@ -1,11 +1,71 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   Approved palette — the ONLY colors in this system:
+   cream #F5F3E9 | black #000000 | white #FFFFFF
+   orange #F28705 | orange-red #F25C05 | red-orange #F24405
+   Everything else is an alpha derivative of these.
+   ============================================================ */
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-code: var(--code-bg);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-active: var(--accent-active);
+}
+
+:root {
+  --bg: #f5f3e9;
+  --surface: rgba(0, 0, 0, 0.03);
+  --code-bg: #f5f3e9;
+  --text-primary: #000000;
+  --text-secondary: rgba(0, 0, 0, 0.65);
+  --text-tertiary: rgba(0, 0, 0, 0.8);
+  --text-muted: rgba(0, 0, 0, 0.45);
+  --border: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.4);
+  --accent: #f28705;
+  --accent-hover: #f25c05;
+  --accent-active: #f24405;
+  --selection-bg: #f28705;
+  --selection-text: #000000;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #000000;
+  --surface: rgba(255, 255, 255, 0.04);
+  --code-bg: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --border: rgba(255, 255, 255, 0.15);
+  --border-strong: rgba(255, 255, 255, 0.25);
+  --accent: #f28705;
+  --accent-hover: #f25c05;
+  --accent-active: #f24405;
+  --selection-bg: #f28705;
+  --selection-text: #000000;
+  color-scheme: dark;
+}
+
 /* ===========================
    Blog Content
 =========================== */
 
 .blog-content {
-  color: #a1a1aa;
+  color: var(--text-secondary);
   line-height: 1.9;
   font-size: 1.05rem;
 }
@@ -18,7 +78,7 @@
 .blog-content h2,
 .blog-content h3,
 .blog-content h4 {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 700;
   margin-top: 2.75rem;
   margin-bottom: 1rem;
@@ -54,13 +114,13 @@
 =========================== */
 
 .blog-content a {
-  color: #f28705;
+  color: var(--accent);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .blog-content a:hover {
-  color: #f25c05;
+  color: var(--accent-hover);
 }
 
 /* ===========================
@@ -92,8 +152,8 @@
 .blog-content blockquote {
   margin: 2rem 0;
   padding-left: 1rem;
-  border-left: 3px solid #f28705;
-  color: #d4d4d8;
+  border-left: 3px solid var(--accent);
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -105,7 +165,7 @@
   width: 100%;
   margin: 2rem 0;
   border-radius: 1rem;
-  border: 1px solid #27272a;
+  border: 1px solid var(--border);
 }
 
 .blog-content a img {
@@ -121,9 +181,9 @@
 =========================== */
 
 .blog-content code {
-  background: #111111;
-  color: #f28705;
-  border: 1px solid #27272a;
+  background: var(--code-bg);
+  color: var(--accent);
+  border: 1px solid var(--border);
   border-radius: 0.35rem;
   padding: 0.15rem 0.35rem;
   font-size: 0.95em;
@@ -134,8 +194,8 @@
 =========================== */
 
 .blog-content pre {
-  background: #0a0a0a;
-  border: 1px solid #27272a;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 1rem;
   padding: 1.25rem;
   overflow-x: auto;
@@ -161,14 +221,14 @@
 
 .blog-content th,
 .blog-content td {
-  border: 1px solid #27272a;
+  border: 1px solid var(--border);
   padding: 0.75rem;
   text-align: left;
 }
 
 .blog-content th {
-  background: #111111;
-  color: #ffffff;
+  background: var(--code-bg);
+  color: var(--text-primary);
 }
 
 /* ===========================
@@ -177,7 +237,7 @@
 
 .blog-content hr {
   border: none;
-  border-top: 1px solid #27272a;
+  border-top: 1px solid var(--border);
   margin: 3rem 0;
 }
 
@@ -186,7 +246,7 @@
 =========================== */
 
 .blog-content strong {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -199,6 +259,6 @@
 =========================== */
 
 .blog-content ::selection {
-  background: #f28705;
-  color: #000000;
+  background: var(--selection-bg);
+  color: var(--selection-text);
 }

@@ -8,11 +8,11 @@ const { title, description, date, url, cover } = Astro.props;
 
 <a
     href={url}
-    class="block bg-[#0A0A0A] border border-zinc-800 rounded-2xl p-6 transition hover:-translate-y-1 hover:border-[#F28705]"
+    class="block bg-surface border border-border rounded-2xl p-6 transition hover:-translate-y-1 hover:border-accent"
 >
     {
         cover && (
-            <div class="mb-6 h-56 overflow-hidden rounded-xl border border-zinc-800">
+            <div class="mb-6 h-56 overflow-hidden rounded-xl border border-border">
                 <img
                     src={cover}
                     alt={title}
@@ -22,15 +22,15 @@ const { title, description, date, url, cover } = Astro.props;
         )
     }
 
-    <h2 class="text-2xl font-bold text-white">
+    <h2 class="text-2xl font-bold text-text-primary">
         {title}
     </h2>
 
-    <p class="mt-3 text-zinc-400 leading-7">
+    <p class="mt-3 text-text-secondary leading-7">
         {description}
     </p>
 
-    <p class="mt-4 text-sm text-zinc-500">
+    <p class="mt-4 text-sm text-text-muted">
         {new Date(date).toLocaleDateString()}
     </p>
 </a>

@@ -7,19 +7,19 @@ const { frontmatter } = Astro.props;
 <Layout>
     <article class="max-w-3xl mx-auto">
         <p
-            class="text-[#F28705] text-sm tracking-widest uppercase font-semibold"
+            class="text-accent text-sm tracking-widest uppercase font-semibold"
         >
             Blog
         </p>
 
-        <h1 class="mt-3 text-5xl font-bold text-white">
+        <h1 class="mt-3 text-5xl font-bold text-text-primary">
             {frontmatter.title}
         </h1>
 
-        <p class="mt-4 text-zinc-500">
+        <p class="mt-4 text-text-muted">
             {new Date(frontmatter.date).toLocaleDateString()}
         </p>
-        <hr class="mt-8 border-zinc-800" />
+        <hr class="mt-8 border-border" />
 
         <div class="blog-content mt-12">
             <slot />
