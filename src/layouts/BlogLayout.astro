@@ -4,7 +4,10 @@ import Layout from "./Layout.astro";
 const { frontmatter } = Astro.props;
 ---
 
-<Layout>
+<Layout
+    title={`${frontmatter.title} | Monish Gowda`}
+    description={frontmatter.description}
+>
     <article class="max-w-3xl mx-auto">
         <p
             class="text-accent text-sm tracking-widest uppercase font-semibold"

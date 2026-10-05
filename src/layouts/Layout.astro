@@ -4,24 +4,45 @@ import profileData from "../data/profile.json";
 import type { Profile } from "../types";
 import { ClientRouter } from "astro:transitions";
 
-
-
 const profile = profileData as Profile;
 const currentPath = Astro.url.pathname;
+
+interface Props {
+    title?: string;
+    description?: string;
+    canonical?: string;
+}
+
+const site = "https://monish.page";
+
+const {
+    title = "Monish Gowda | Backend Engineer",
+    description = "Backend Engineer passionate about distributed systems, Spring Boot, Go, Kafka, PostgreSQL, and scalable software engineering.",
+    canonical = `${site}${Astro.url.pathname}`,
+} = Astro.props;
+
+const navLinks = [
+    { href: "/", label: "Home", match: (p: string) => p === "/" },
+    {
+        href: "/blogs",
+        label: "Blogs",
+        match: (p: string) => p.startsWith("/blogs"),
+    },
+];
+
+// Blog routes stay deliberately calm — no page-level animation class.
+const isBlogRoute = currentPath.startsWith("/blogs");
 ---
 
-<html lang="en">
+<html lang="en" class:list={[!isBlogRoute && "fade-in"]}>
     <head>
         <ClientRouter />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
 
-        <title>Monish Gowda | Backend Engineer</title>
+        <title>{title}</title>
 
-        <meta
-            name="description"
-            content="Backend Engineer passionate about distributed systems, Spring Boot, Go, Kafka, PostgreSQL, and scalable software engineering."
-        />
+        <meta name="description" content={description} />
 
         <meta
             name="keywords"
@@ -31,77 +52,108 @@ const currentPath = Astro.url.pathname;
         <meta name="author" content="Monish Gowda" />
         <meta property="og:type" content="website" />
 
-        <meta property="og:title"
-              content="Monish Gowda | Backend Engineer" />
+        <meta property="og:title" content={title} />
 
-        <meta property="og:description"
-              content="Backend Engineer passionate about distributed systems, Spring Boot, Kafka, Go and scalable software." />
+        <meta property="og:description" content={description} />
 
-        <meta property="og:url"
-              content="https://monish.page" />
+        <meta property="og:url" content={canonical} />
 
         <meta property="og:image"
               content="https://monish.page/og-image.png" />
-              <meta name="twitter:card" content="summary_large_image" />
 
-              <meta
-                  name="twitter:title"
-                  content="Monish Gowda | Backend Engineer"
-              />
+        <meta name="twitter:card" content="summary_large_image" />
 
-              <meta
-                  name="twitter:description"
-                  content="Backend Engineer passionate about distributed systems and scalable software."
-              />
+        <meta
+            name="twitter:title"
+            content={title}
+        />
 
-              <meta
-                  name="twitter:image"
-                  content="https://monish.page/og-image.png"
-              />
+        <meta
+            name="twitter:description"
+            content={description}
+        />
 
-        <link rel="canonical" href="https://monish.page" />
+        <meta
+            name="twitter:image"
+            content="https://monish.page/og-image.png"
+        />
+
+        <link rel="canonical" href={canonical} />
 
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
         <script is:inline>
+            // Runs before first paint.
+            // 1. `.js` gates every entrance animation. Without it the site
+            //    renders as plain, fully-visible content — so no-JS visitors
+            //    (and crawlers) never get hidden or half-animated text.
+            // 2. Restore the stored theme with no flash of the wrong theme.
+            var root = document.documentElement;
+            root.classList.add("js");
+
             try {
                 if (localStorage.getItem("theme") === "light") {
-                    document.documentElement.classList.remove("dark");
+                    root.classList.remove("dark");
                 } else {
-                    document.documentElement.classList.add("dark");
+                    root.classList.add("dark");
                 }
-            } catch {
-                document.documentElement.classList.add("dark");
+            } catch (e) {
+                root.classList.add("dark");
             }
         </script>
     </head>
 
     <body class="bg-background text-text-primary min-h-screen">
-        <nav class="border-b border-border">
-            <div class="max-w-4xl mx-auto px-6 py-5">
-                <div class="flex flex-wrap justify-center items-center gap-8 text-sm">
-                    <a
-                        href="/"
-                        class={currentPath === "/"
-                                ? "text-accent"
-                                : "text-text-secondary hover:text-accent transition"}
-                    >
-                        Home
-                    </a>
+        <!-- Ambient background. Static radial-gradient "aura" rather than
+             animated blurred divs: blur cost scales with radius and layer
+             size, so drifting blurs are the classic jank trap. -->
+        <div class="ambient" aria-hidden="true">
+            <div class="ambient__grid"></div>
+            <div class="ambient__glow ambient__glow--a"></div>
+            <div class="ambient__glow ambient__glow--b"></div>
+            <div class="ambient__glow ambient__glow--c"></div>
+        </div>
 
-                    <a
-                        href="/blogs"
-                        class={currentPath.startsWith("/blogs")
-                                ? "text-accent"
-                                : "text-text-secondary hover:text-accent transition"}
-                    >
-                        Blogs
-                    </a>
+        <!-- Film grain: a tiled SVG feTurbulence data URI, rasterised once
+             by the browser and then repeated for free. -->
+        <div class="grain" aria-hidden="true"></div>
+
+        <!-- Pointer spotlight, desktop only. -->
+        <div class="cursor-aura" aria-hidden="true"></div>
+
+        <!-- Scroll progress. Grows from the left via scaleX. -->
+        <div class="scroll-progress" aria-hidden="true"></div>
+
+        <nav class="site-nav relative" id="site-nav">
+            <div class="max-w-4xl mx-auto px-6 py-5">
+                <div
+                    class="flex flex-wrap justify-center items-center gap-8 text-sm lg:gap-9"
+                >
+                    {
+                        navLinks.map((link) => (
+                            <a
+                                href={link.href}
+                                data-magnetic
+                                data-nav-link
+                                class:list={[
+                                    "nav-link magnetic inline-block",
+                                    link.match(currentPath)
+                                        ? "text-accent"
+                                        : "text-text-secondary hover:text-accent transition-colors",
+                                ]}
+                            >
+                                {link.label}
+                            </a>
+                        ))
+                    }
 
                     <a
                         href="/resume.pdf"
                         target="_blank"
-                        class="text-text-secondary hover:text-accent transition"
+                        rel="noopener noreferrer"
+                        data-magnetic
+                        data-nav-link
+                        class="nav-link magnetic inline-block text-text-secondary hover:text-accent transition-colors"
                     >
                         Resume
                     </a>
@@ -109,7 +161,10 @@ const currentPath = Astro.url.pathname;
                     <a
                         href={profile.github}
                         target="_blank"
-                        class="text-text-secondary hover:text-accent transition"
+                        rel="noopener noreferrer"
+                        data-magnetic
+                        data-nav-link
+                        class="nav-link magnetic inline-block text-text-secondary hover:text-accent transition-colors"
                     >
                         GitHub
                     </a>
@@ -118,7 +173,7 @@ const currentPath = Astro.url.pathname;
                         id="theme-toggle"
                         type="button"
                         aria-label="Toggle theme"
-                        class="flex items-center cursor-pointer text-text-secondary hover:text-accent transition"
+                        class="flex items-center cursor-pointer text-text-secondary hover:text-accent transition-colors"
                     >
                         <svg
                             class="dark:hidden"
@@ -162,6 +217,9 @@ const currentPath = Astro.url.pathname;
                         </svg>
                     </button>
                 </div>
+
+                <span class="nav-indicator" id="nav-indicator" aria-hidden="true"
+                ></span>
             </div>
         </nav>
 
@@ -172,10 +230,39 @@ const currentPath = Astro.url.pathname;
         <footer
             class="max-w-4xl mx-auto px-6 py-10 mt-24 border-t border-border text-sm text-text-muted"
         >
-            © 2026 Monish Gowda
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <span>© 2026 Monish Gowda</span>
+                <span class="font-mono text-xs">
+                    Built with Astro · Tailwind
+                </span>
+            </div>
         </footer>
 
         <script is:inline>
+            // Everything below is plain JS reacting to pointer/scroll. All of
+            // it is re-run after a ClientRouter navigation, because Astro
+            // replaces the entire <body>.
+
+            var reduceMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+            var finePointer = window.matchMedia("(pointer: fine)").matches;
+
+            // Shared, window-persisted FX state. ClientRouter replaces
+            // <body> on navigation and this script re-executes, so loops,
+            // listeners and observers must be restarted against fresh DOM,
+            // never duplicated. Anything keyed off a DOM node dies with it;
+            // anything that must survive lives here.
+            window.__siteFX = window.__siteFX || {
+                raf: 0,
+                pointerBound: false,
+                pointerX: -9999,
+                pointerY: -9999,
+                typeRun: 0,
+                scrambleRun: 0,
+            };
+            var FX = window.__siteFX;
+
             function applyStoredTheme() {
                 try {
                     if (localStorage.getItem("theme") === "light") {
@@ -183,34 +270,454 @@ const currentPath = Astro.url.pathname;
                     } else {
                         document.documentElement.classList.add("dark");
                     }
-                } catch {
+                } catch (e) {
                     document.documentElement.classList.add("dark");
                 }
             }
+
+            /* ---------------- theme toggle ----------------
+               Uses a view transition for an "ink wipe" from the button
+               outward when supported. The class is added and removed
+               around the transition only, so it can never leak into
+               normal page navigation. */
             function bindThemeToggle() {
-                const btn = document.getElementById("theme-toggle");
+                var btn = document.getElementById("theme-toggle");
                 if (!btn || btn.dataset.bound) return;
                 btn.dataset.bound = "true";
-                btn.addEventListener("click", () => {
-                    const isDark =
-                        document.documentElement.classList.toggle("dark");
-                    try {
-                        localStorage.setItem(
-                            "theme",
-                            isDark ? "dark" : "light"
-                        );
-                    } catch {
-                        // ignore
+
+                btn.addEventListener("click", function () {
+                    var root = document.documentElement;
+                    var rect = btn.getBoundingClientRect();
+
+                    var apply = function () {
+                        var isDark = root.classList.toggle("dark");
+                        try {
+                            localStorage.setItem(
+                                "theme",
+                                isDark ? "dark" : "light"
+                            );
+                        } catch (e) {}
+                    };
+
+                    if (!document.startViewTransition || reduceMotion) {
+                        apply();
+                        return;
                     }
+
+                    root.style.setProperty(
+                        "--wipe-x",
+                        rect.left + rect.width / 2 + "px"
+                    );
+                    root.style.setProperty(
+                        "--wipe-y",
+                        rect.top + rect.height / 2 + "px"
+                    );
+                    root.classList.add("theme-wipe");
+
+                    var transition = document.startViewTransition(apply);
+                    transition.finished.finally(function () {
+                        root.classList.remove("theme-wipe");
+                    });
                 });
             }
-            applyStoredTheme();
-            bindThemeToggle();
-            document.addEventListener("astro:after-swap", () => {
+
+            /* ---------------- nav scroll state ----------------
+               The scroll listener is attached once and re-queries the nav
+               on every event, so it keeps working after ClientRouter swaps
+               the <body> for fresh nodes. */
+            function bindNavScroll() {
+                if (!FX.navScrollBound) {
+                    FX.navScrollBound = true;
+                    window.addEventListener(
+                        "scroll",
+                        function () {
+                            var nav =
+                                document.getElementById("site-nav");
+                            if (!nav) return;
+                            nav.classList.toggle(
+                                "is-scrolled",
+                                window.scrollY > 8
+                            );
+                        },
+                        { passive: true }
+                    );
+                }
+
+                var nav = document.getElementById("site-nav");
+                if (nav)
+                    nav.classList.toggle("is-scrolled", window.scrollY > 8);
+            }
+
+            /* ---------------- scroll progress ----------------
+               JS-driven by design. The CSS scroll-driven version was
+               rejected: minifiers fold `animation-timeline` into the
+               `animation` shorthand, which the spec treats as reset-only,
+               so the timeline is silently discarded at build time.
+               `--scroll-progress` is registered with `inherits: false`, so
+               writing it every frame invalidates only this one element. */
+            function bindScrollProgress() {
+                if (!FX.progressBound) {
+                    FX.progressBound = true;
+                    var ticking = false;
+                    var update = function () {
+                        ticking = false;
+                        var bar = document.querySelector(".scroll-progress");
+                        if (!bar) return;
+                        var max =
+                            document.documentElement.scrollHeight -
+                            window.innerHeight;
+                        var p = max > 0 ? window.scrollY / max : 0;
+                        bar.style.setProperty(
+                            "--scroll-progress",
+                            String(Math.min(1, Math.max(0, p)))
+                        );
+                    };
+                    var onScroll = function () {
+                        if (ticking) return;
+                        ticking = true;
+                        requestAnimationFrame(update);
+                    };
+                    window.addEventListener("scroll", onScroll, {
+                        passive: true,
+                    });
+                    window.addEventListener("resize", onScroll, {
+                        passive: true,
+                    });
+                    FX.progressUpdate = update;
+                }
+                if (FX.progressUpdate) FX.progressUpdate();
+            }
+
+            /* ---------------- reveal on scroll ----------------
+               IntersectionObserver baseline. Browsers with view()
+               timelines get the animation purely in CSS instead. */
+            function initReveal() {
+                // Drop the previous page's observer: its targets are
+                // detached now, and keeping it would leak them.
+                if (window.__revealObserver) {
+                    window.__revealObserver.disconnect();
+                    window.__revealObserver = null;
+                }
+
+                var items = document.querySelectorAll(
+                    "[data-reveal]:not(.is-visible)"
+                );
+                if (!items.length) return;
+
+                if (reduceMotion || !("IntersectionObserver" in window)) {
+                    items.forEach(function (el) {
+                        el.classList.add("is-visible");
+                    });
+                    return;
+                }
+
+                var observer = new IntersectionObserver(
+                    function (entries) {
+                        entries.forEach(function (entry) {
+                            if (!entry.isIntersecting) return;
+                            entry.target.classList.add("is-visible");
+                            observer.unobserve(entry.target);
+                        });
+                    },
+                    { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
+                );
+
+                items.forEach(function (el) {
+                    observer.observe(el);
+                });
+
+                window.__revealObserver = observer;
+            }
+
+            /* ---------------- nav indicator + magnetic links ----------------
+               One rAF loop drives both: the active-link underline slides
+               via transform, and each link eases toward the pointer. */
+            function bindPointerFX() {
+                var links = Array.prototype.slice.call(
+                    document.querySelectorAll("[data-nav-link]")
+                );
+                var nav = document.getElementById("site-nav");
+                var aura = document.querySelector(".cursor-aura");
+
+                if (!links.length || !nav) return;
+
+                // Re-queries fresh DOM on every call: the indicator resize
+                // listener is attached once (FX flag) and must not capture
+                // nodes that ClientRouter is about to replace.
+                function moveIndicator() {
+                    var ind = document.getElementById("nav-indicator");
+                    var nv = document.getElementById("site-nav");
+                    if (!ind || !nv) return;
+                    var active =
+                        nv.querySelector(".text-accent[data-nav-link]");
+                    if (!active) {
+                        ind.classList.remove("is-ready");
+                        return;
+                    }
+                    var navRect = nv.getBoundingClientRect();
+                    var r = active.getBoundingClientRect();
+                    ind.style.width = r.width + "px";
+                    ind.style.transform =
+                        "translate3d(" +
+                        (r.left - navRect.left) +
+                        "px,0,0)";
+                    ind.classList.add("is-ready");
+                }
+
+                moveIndicator();
+                if (!FX.indicatorResizeBound) {
+                    FX.indicatorResizeBound = true;
+                    window.addEventListener("resize", moveIndicator, {
+                        passive: true,
+                    });
+                }
+
+                if (reduceMotion || !finePointer) return;
+
+                // One shared pointer listener: it only records coordinates,
+                // so re-adding it per navigation would just pile up dupes.
+                if (!FX.pointerBound) {
+                    FX.pointerBound = true;
+                    window.addEventListener(
+                        "pointermove",
+                        function (e) {
+                            FX.pointerX = e.clientX;
+                            FX.pointerY = e.clientY;
+                            var a =
+                                document.querySelector(".cursor-aura");
+                            if (a) a.classList.add("is-on");
+                        },
+                        { passive: true }
+                    );
+                }
+
+                // Cancel the previous page's loop before starting a new one:
+                // it captured detached nodes, and two loops would fight over
+                // the same transform writes.
+                if (FX.raf) cancelAnimationFrame(FX.raf);
+
+                var auraX = -9999;
+                var auraY = -9999;
+                var mags = links.map(function (el) {
+                    return { el: el, x: 0, y: 0 };
+                });
+
+                (function loop() {
+                    // Cursor aura: simple easing toward the pointer.
+                    if (aura && document.contains(aura)) {
+                        auraX += (FX.pointerX - auraX) * 0.12;
+                        auraY += (FX.pointerY - auraY) * 0.12;
+                        aura.style.transform =
+                            "translate3d(" +
+                            auraX +
+                            "px," +
+                            auraY +
+                            "px,0)";
+                    }
+
+                    // Magnetic links: pull toward the pointer when close.
+                    mags.forEach(function (m) {
+                        if (!document.contains(m.el)) return;
+                        var r = m.el.getBoundingClientRect();
+                        var cx = r.left + r.width / 2;
+                        var cy = r.top + r.height / 2;
+                        var dx = FX.pointerX - cx;
+                        var dy = FX.pointerY - cy;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+                        var targetX = 0;
+                        var targetY = 0;
+                        if (dist < 90) {
+                            targetX = dx * 0.22;
+                            targetY = dy * 0.28;
+                        }
+                        m.x += (targetX - m.x) * 0.15;
+                        m.y += (targetY - m.y) * 0.15;
+                        m.el.style.transform =
+                            "translate3d(" +
+                            m.x.toFixed(2) +
+                            "px," +
+                            m.y.toFixed(2) +
+                            "px,0)";
+                    });
+
+                    FX.raf = requestAnimationFrame(loop);
+                })();
+            }
+
+            /* ---------------- project card tilt + spotlight ----------------
+               Rotates the card toward the pointer (capped low so it stays
+               tasteful) and moves the spotlight via registered,
+               non-inheriting custom properties. */
+            function bindCardFX() {
+                if (reduceMotion || !finePointer) return;
+
+                var cards = Array.prototype.slice.call(
+                    document.querySelectorAll(".card")
+                );
+
+                cards.forEach(function (card) {
+                    if (card.dataset.cardBound) return;
+                    card.dataset.cardBound = "true";
+
+                    card.addEventListener(
+                        "pointermove",
+                        function (e) {
+                            var r = card.getBoundingClientRect();
+                            var px = (e.clientX - r.left) / r.width;
+                            var py = (e.clientY - r.top) / r.height;
+
+                            card.style.setProperty(
+                                "--mx",
+                                (px * 100).toFixed(2) + "%"
+                            );
+                            card.style.setProperty(
+                                "--my",
+                                (py * 100).toFixed(2) + "%"
+                            );
+
+                            var rx = (0.5 - py) * 7;
+                            var ry = (px - 0.5) * 7;
+                            card.classList.add("is-tilting");
+                            card.style.transform =
+                                "perspective(900px) rotateX(" +
+                                rx.toFixed(2) +
+                                "deg) rotateY(" +
+                                ry.toFixed(2) +
+                                "deg) translate3d(0,-4px,0)";
+                        },
+                        { passive: true }
+                    );
+
+                    card.addEventListener("pointerleave", function () {
+                        card.classList.remove("is-tilting");
+                        card.style.transform = "";
+                    });
+                });
+            }
+
+            /* ---------------- typewriter ----------------
+               Mono role line with a blinking caret. The real text lives in
+               an aria-label so assistive tech never hears partial typing. */
+            function bindTypewriter() {
+                var el = document.querySelector("[data-typewriter]");
+                if (!el || el.dataset.typed) return;
+                el.dataset.typed = "true";
+
+                var text = el.getAttribute("data-typewriter") || "";
+                var caret = el.querySelector(".caret");
+
+                if (reduceMotion) {
+                    el.textContent = text;
+                    return;
+                }
+
+                // Run token: if the user navigates mid-typing, the next boot
+                // bumps FX.typeRun and this stale chain bails instead of
+                // writing into a detached node.
+                FX.typeRun += 1;
+                var run = FX.typeRun;
+
+                var i = 0;
+                var out = document.createElement("span");
+                el.textContent = "";
+                el.appendChild(out);
+                if (caret) el.appendChild(caret);
+
+                var type = function () {
+                    if (run !== FX.typeRun) return;
+                    if (i <= text.length) {
+                        out.textContent = text.slice(0, i);
+                        i += 1;
+                        setTimeout(type, 34);
+                    } else if (caret) {
+                        caret.classList.add("is-blinking");
+                    }
+                };
+                // Begin after the headline finish.
+                setTimeout(type, 420);
+            }
+
+            /* ---------------- 404 scramble ----------------
+               Resolves random glyphs into the real text, left to right.
+               Monospace + tabular spacing prevents any width jitter. */
+            function bindScramble() {
+                var els = Array.prototype.slice.call(
+                    document.querySelectorAll("[data-scramble]")
+                );
+                if (!els.length) return;
+
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+
+                els.forEach(function (el) {
+                    if (el.dataset.scrambled) return;
+                    el.dataset.scrambled = "true";
+
+                    var final = el.getAttribute("data-scramble") || "";
+                    el.setAttribute("aria-label", final);
+
+                    if (reduceMotion) {
+                        el.textContent = final;
+                        return;
+                    }
+
+                    el.textContent = "";
+                    var cells = [];
+                    for (var i = 0; i < final.length; i += 1) {
+                        var span = document.createElement("span");
+                        var ch = final[i];
+                        span.textContent = ch;
+                        if (ch !== " ") span.setAttribute("aria-hidden", "true");
+                        el.appendChild(span);
+                        cells.push({ span: span, ch: ch });
+                    }
+
+                    var revealed = 0;
+                    FX.scrambleRun += 1;
+                    var run = FX.scrambleRun;
+                    var timer = setInterval(function () {
+                        if (run !== FX.scrambleRun) {
+                            clearInterval(timer);
+                            return;
+                        }
+                        cells.forEach(function (cell, idx) {
+                            if (cell.ch === " ") return;
+                            if (idx < revealed) {
+                                cell.span.textContent = cell.ch;
+                                cell.span.classList.remove("glyph");
+                            } else {
+                                cell.span.textContent =
+                                    chars[(Math.random() * chars.length) | 0];
+                                cell.span.classList.add("glyph");
+                            }
+                        });
+                        revealed += 0.5;
+                        if (revealed > cells.length) {
+                            clearInterval(timer);
+                            cells.forEach(function (cell) {
+                                cell.span.textContent = cell.ch;
+                                cell.span.classList.remove("glyph");
+                            });
+                        }
+                    }, 28);
+                });
+            }
+
+            /* ---------------- boot ---------------- */
+            function boot() {
                 applyStoredTheme();
                 bindThemeToggle();
-            });
-            document.addEventListener("astro:page-load", applyStoredTheme);
+                bindNavScroll();
+                bindScrollProgress();
+                initReveal();
+                bindPointerFX();
+                bindCardFX();
+                bindTypewriter();
+                bindScramble();
+            }
+
+            boot();
+            document.addEventListener("astro:after-swap", boot);
+            document.addEventListener("astro:page-load", boot);
         </script>
     </body>
 </html>

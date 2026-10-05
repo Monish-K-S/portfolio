@@ -21,28 +21,64 @@ blogPosts.sort(
 );
 
 const latestPosts = blogPosts.slice(0, 3);
+
+// Hero name is split into words so each can rise out of its own mask.
+// Word-level, not character-level: proportional glyphs would jitter.
+const nameWords = profile.name.split(" ");
+
+// Ticker items are derived from the real skills data — nothing invented.
+const tickerItems = Object.values(profile.skills).flat();
 ---
 
 <Layout>
     <section>
-        <h1 class="text-7xl font-bold tracking-tight text-text-primary">
-            {profile.name}
+        <h1
+            class="text-6xl font-bold tracking-tight text-text-primary sm:text-7xl leading-[1.05]"
+        >
+            {
+                nameWords.map((word, i) => (
+                    <>
+                        <span
+                            class="hero-word"
+                            style={`--word-delay: ${120 + i * 90}ms;`}
+                        >
+                            <span>{word}</span>
+                        </span>
+                        {i < nameWords.length - 1 ? " " : ""}
+                    </>
+                ))
+            }
         </h1>
 
-        <p class="mt-4 text-xl text-accent">
-            {profile.title}
+        <p
+            class="mt-4 text-xl text-accent type-line enter-rise"
+            style="--enter-delay: 480ms;"
+        >
+            <span
+                data-typewriter={profile.title}
+                aria-label={profile.title}
+            >
+                {profile.title}
+                <span class="caret" aria-hidden="true"></span>
+            </span>
         </p>
 
-        <p class="mt-6 max-w-3xl text-text-secondary leading-8 text-justify">
+        <p
+            class="mt-6 max-w-3xl text-text-secondary leading-8 text-justify enter-rise"
+            style="--enter-delay: 620ms;"
+        >
             {profile.about}
         </p>
 
-        <div class="mt-10 flex flex-wrap gap-4">
+        <div
+            class="mt-10 flex flex-wrap gap-4 enter-rise"
+            style="--enter-delay: 740ms;"
+        >
             <a
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="rounded-full border border-border-strong px-5 py-2 text-sm font-medium text-text-primary transition hover:border-accent hover:text-accent"
+                class="pill rounded-full border border-border-strong px-5 py-2 text-sm font-medium text-text-primary"
             >
                 Resume
             </a>
@@ -51,7 +87,7 @@ const latestPosts = blogPosts.slice(0, 3);
                 href={profile.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="rounded-full border border-border-strong px-5 py-2 text-sm font-medium text-text-primary transition hover:border-accent hover:text-accent"
+                class="pill rounded-full border border-border-strong px-5 py-2 text-sm font-medium text-text-primary"
             >
                 GitHub
             </a>
@@ -60,14 +96,30 @@ const latestPosts = blogPosts.slice(0, 3);
                 href={profile.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="rounded-full border border-border-strong px-5 py-2 text-sm font-medium text-text-primary transition hover:border-accent hover:text-accent"
+                class="pill rounded-full border border-border-strong px-5 py-2 text-sm font-medium text-text-primary"
             >
                 LinkedIn
             </a>
         </div>
     </section>
 
-    <section class="mt-24">
+    <!-- Technology ticker. Runs continuously, pauses on hover.
+         The track holds exactly 2 copies of the list: the -50%
+         ticker-scroll loop depends on that. -->
+    <div class="ticker mt-16" aria-hidden="true">
+        <div class="ticker__track">
+            {
+                [...tickerItems, ...tickerItems].map((item) => (
+                    <span class="ticker__item">
+                        {item}
+                        <span class="ticker__dot"></span>
+                    </span>
+                ))
+            }
+        </div>
+    </div>
+
+    <section class="mt-24" data-reveal>
         <div
             class="mb-3 text-accent text-sm tracking-widest uppercase font-semibold"
         >
@@ -87,7 +139,7 @@ const latestPosts = blogPosts.slice(0, 3);
         </div>
     </section>
 
-    <section class="mt-24">
+    <section class="mt-24" data-reveal>
         <div
             class="mb-3 text-accent text-sm tracking-widest uppercase font-semibold"
         >
@@ -111,6 +163,7 @@ const latestPosts = blogPosts.slice(0, 3);
                                         <img
                                             src={post.frontmatter.cover}
                                             alt={post.frontmatter.title}
+                                            loading="lazy"
                                             class="h-full w-full object-cover object-top"
                                         />
                                     </div>
@@ -142,36 +195,90 @@ const latestPosts = blogPosts.slice(0, 3);
         </a>
     </section>
 
-    <section class="mt-16">
-        <h2 class="text-2xl font-semibold text-text-primary">
-            Core Technologies
-        </h2>
+    <section class="mt-16" data-reveal>
+        <div class="flex items-start justify-between gap-8">
+            <h2 class="text-2xl font-semibold text-text-primary">
+                Core Technologies
+            </h2>
+
+            <!-- Decorative node/edge graph: edges draw themselves via
+                 stroke-dashoffset, nodes pulse. Reinforces the
+                 distributed-systems theme without adding content. -->
+            <svg
+                class="motif hidden shrink-0 sm:block"
+                viewBox="0 0 200 120"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path
+                    class="motif__edge"
+                    style="--len: 80; --edge-delay: 0ms;"
+                    d="M100 60 L34 26"
+                ></path>
+                <path
+                    class="motif__edge"
+                    style="--len: 80; --edge-delay: 120ms;"
+                    d="M100 60 L34 94"
+                ></path>
+                <path
+                    class="motif__edge"
+                    style="--len: 80; --edge-delay: 240ms;"
+                    d="M100 60 L166 26"
+                ></path>
+                <path
+                    class="motif__edge"
+                    style="--len: 80; --edge-delay: 360ms;"
+                    d="M100 60 L166 94"
+                ></path>
+
+                <circle class="motif__node" cx="34" cy="26" r="3"></circle>
+                <circle class="motif__node" cx="34" cy="94" r="3"></circle>
+                <circle class="motif__node" cx="166" cy="26" r="3"></circle>
+                <circle class="motif__node" cx="166" cy="94" r="3"></circle>
+
+                <circle
+                    class="motif__node motif__node--pulse"
+                    style="--node-delay: 0ms;"
+                    cx="100"
+                    cy="60"
+                    r="5"
+                ></circle>
+                <circle
+                    class="motif__ring"
+                    style="--node-delay: 0ms;"
+                    cx="100"
+                    cy="60"
+                    r="5"
+                ></circle>
+            </svg>
+        </div>
 
         <div class="mt-8 space-y-8">
             {
                 Object.entries(profile.skills).map(([category, skills]) => (
-                    <div>
+                    <div data-reveal>
                         <h3 class="text-sm uppercase tracking-widest text-accent">
                             {category}
                         </h3>
 
                         <div class="mt-3 flex flex-wrap gap-3">
-                            {
-                                skills.map((skill) => (
-                                    <span
-                                        class="rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-text-tertiary"
-                                    >
-                                        {skill}
-                                    </span>
-                                ))
-                            }
+                            {skills.map((skill, i) => (
+                                <span
+                                    class="pill rounded-md border border-border-strong bg-surface px-3 py-2 text-sm text-text-tertiary"
+                                    data-reveal="scale"
+                                    style={`--reveal-delay: ${i * 45}ms;`}
+                                >
+                                    {skill}
+                                </span>
+                            ))}
                         </div>
                     </div>
                 ))
             }
         </div>
     </section>
-    <section class="mt-24">
+
+    <section class="mt-24" data-reveal>
         <div
             class="mb-3 text-accent text-sm tracking-widest uppercase font-semibold"
         >
@@ -183,29 +290,33 @@ const latestPosts = blogPosts.slice(0, 3);
         </h2>
 
         <div
-            class="mt-6 bg-surface border border-border rounded-2xl p-6"
+            class="card mt-6 p-6"
         >
-            <h3 class="text-lg font-semibold text-text-primary">
-                B.E. Computer Science and Engineering (Data Science)
-            </h3>
+            <span class="card__hairline"></span>
 
-            <div class="mt-3 flex flex-wrap gap-4 text-text-secondary">
-                <span>
-                    MVJ College of Engineering
-                </span>
+            <div class="card__body">
+                <h3 class="text-lg font-semibold text-text-primary">
+                    B.E. Computer Science and Engineering (Data Science)
+                </h3>
 
-                <span>
-                    CGPA: 9.11 / 10
-                </span>
+                <div class="mt-3 flex flex-wrap gap-4 text-text-secondary">
+                    <span>
+                        MVJ College of Engineering
+                    </span>
+
+                    <span>
+                        CGPA: 9.11 / 10
+                    </span>
+                </div>
+
+                <p class="mt-3 text-sm text-text-muted">
+                    2023 – 2027
+                </p>
             </div>
-
-            <p class="mt-3 text-sm text-text-muted">
-                2023 – 2027
-            </p>
         </div>
     </section>
 
-    <section class="mt-24">
+    <section class="mt-24" data-reveal>
         <div
             class="mb-3 text-accent text-sm tracking-widest uppercase font-semibold"
         >
@@ -250,10 +361,6 @@ const latestPosts = blogPosts.slice(0, 3);
             >
                 LinkedIn
             </a>
-
-
-
-
         </div>
     </section>
 </Layout>

@@ -2,6 +2,8 @@
   {
     "title": "Real-Time Log Analytics & Observability Platform",
     "image": "/projects/log-analytics-architecture.png",
+    "imageWidth": 1536,
+    "imageHeight": 1024,
     "description": "Built a distributed observability platform that ingests, processes, indexes, and visualizes streaming application logs in real time using Apache Kafka, Spring Boot, PostgreSQL, Lucene, and Grafana.",
     "highlights": [
       "Event-Driven Architecture",
@@ -22,6 +24,8 @@
   {
     "title": "PulseDrop - Minimal Real-Time Incident Reporting System",
     "image": "/projects/pulsedrop-system-architecture.png",
+    "imageWidth": 1598,
+    "imageHeight": 576,
     "description": "Built a secure full-stack incident management system featuring JWT authentication, role-based authorization, ownership validation, and a layered Spring Boot architecture with a React frontend.",
     "highlights": [
       "JWT Authentication",

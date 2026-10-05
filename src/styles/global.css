@@ -9,6 +9,20 @@
    Everything else is an alpha derivative of these.
    ============================================================ */
 
+@theme {
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+/* Geist Mono — self-hosted variable font for the mono/technical accents */
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2")
+    format("woff2");
+}
+
 @theme inline {
   --color-background: var(--bg);
   --color-surface: var(--surface);
@@ -39,6 +53,9 @@
   --accent-active: #f24405;
   --selection-bg: #f28705;
   --selection-text: #000000;
+  --grid-line: rgba(0, 0, 0, 0.045);
+  --glow-accent: rgba(242, 135, 5, 0.16);
+  --shadow-card: 0 18px 40px -24px rgba(0, 0, 0, 0.35);
   color-scheme: light;
 }
 
@@ -57,7 +74,841 @@
   --accent-active: #f24405;
   --selection-bg: #f28705;
   --selection-text: #000000;
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --glow-accent: rgba(242, 92, 5, 0.28);
+  --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.9);
   color-scheme: dark;
+}
+
+/* ============================================================
+   MOTION LAYER
+   Rules of this file:
+   - only `transform` and `opacity` are animated, except for a
+     few deliberately small surfaces (progress bar, card border)
+   - no animated `filter: blur()` — background aura uses static
+     radial-gradients instead, because blur cost scales with both
+     radius and layer size
+   - registered custom properties always use `inherits: false` so
+     changing them invalidates one element, not a whole subtree
+   - every effect is disabled under `prefers-reduced-motion`
+   ============================================================ */
+
+/* Typed, non-inheriting properties.
+   Registering them is what makes them interpolate at all (an
+   unregistered custom property is an opaque string and cannot be
+   animated), and `inherits: false` keeps the style recalc local. */
+@property --scroll-progress {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --mx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+
+@property --my {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+
+/* ===========================
+   Base / chrome polish
+=========================== */
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Orange-tinted scrollbar so even the chrome carries the accent */
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3px solid var(--bg);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ===========================
+   Reusable helpers
+=========================== */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Mono accents read as "technical" next to the Inter body copy */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #f28705 0%, #f25c05 50%, #f24405 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===========================
+   Ambient background
+   Static radial-gradients — deliberately NOT animated blurs.
+   Two slow drifts are transform-only, so they stay on the
+   compositor. The third is fully static.
+=========================== */
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ambient__grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  /* fade the grid out towards the edges so it never looks like graph paper */
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 30%,
+    #000 0%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 60% at 50% 30%,
+    #000 0%,
+    transparent 100%
+  );
+}
+
+.ambient__glow {
+  position: absolute;
+  border-radius: 999px;
+  will-change: transform;
+}
+
+.ambient__glow--a {
+  top: -14rem;
+  left: -10rem;
+  height: 34rem;
+  width: 34rem;
+  background: radial-gradient(
+    circle at center,
+    var(--glow-accent) 0%,
+    transparent 68%
+  );
+}
+
+.ambient__glow--b {
+  top: 26%;
+  right: -14rem;
+  height: 32rem;
+  width: 32rem;
+  background: radial-gradient(
+    circle at center,
+    rgba(242, 68, 5, 0.14) 0%,
+    transparent 68%
+  );
+}
+
+.ambient__glow--c {
+  bottom: -12rem;
+  left: 28%;
+  height: 30rem;
+  width: 30rem;
+  background: radial-gradient(
+    circle at center,
+    rgba(242, 92, 5, 0.12) 0%,
+    transparent 70%
+  );
+}
+
+/* ===========================
+   Film grain
+   A tiled SVG `feTurbulence` data URI. The browser rasterises the
+   tile once and repeats it, so this costs nothing per frame —
+   unlike a live `filter: url(#noise)` over a full-viewport layer.
+=========================== */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -9;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  background-repeat: repeat;
+}
+
+/* ===========================
+   Cursor spotlight
+   A soft orange glow that lerps toward the pointer. Desktop only:
+   gated on a fine pointer and driven by JS from the existing rAF
+   loop. Composited via translate3d, never by moving `top`/`left`.
+=========================== */
+
+.cursor-aura {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 30rem;
+  width: 30rem;
+  margin: -15rem 0 0 -15rem;
+  z-index: -8;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  background: radial-gradient(
+    circle at center,
+    rgba(242, 135, 5, 0.1) 0%,
+    transparent 62%
+  );
+  transition: opacity 0.7s ease;
+}
+
+.cursor-aura.is-on {
+  opacity: 1;
+}
+
+/* ===========================
+   Scroll progress
+   Driven purely from JS (see Layout.astro). The CSS scroll-driven
+   version was dropped deliberately: CSS minifiers fold
+   `animation-timeline` into the `animation` shorthand, where the spec
+   treats it as reset-only and silently discards the timeline. A
+   rAF-throttled listener writing a registered, non-inheriting
+   property is universal and effectively free for a 2px bar.
+=========================== */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #f28705, #f25c05, #f24405);
+  pointer-events: none;
+}
+
+/* ===========================
+   Nav
+   Sticky, with a scrolled state. `backdrop-filter` is real cost,
+   so it is confined to this ~64px strip — never the whole page.
+=========================== */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.35s ease, border-color 0.35s ease,
+    backdrop-filter 0.35s ease;
+}
+
+.site-nav.is-scrolled {
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  border-bottom-color: var(--border);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+}
+
+/* Sliding active indicator. One element moved by transform, rather
+   than an underline per link, keeps it to a single composited node. */
+.nav-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  width: 0;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+
+.nav-indicator.is-ready {
+  opacity: 1;
+}
+
+.nav-link {
+  position: relative;
+}
+
+/* Magnetic links: JS nudges each link toward the pointer. The class
+   only exists on devices that actually have a pointer. */
+.magnetic {
+  will-change: transform;
+}
+
+/* ===========================
+   Scroll reveal
+   IntersectionObserver is the baseline; browsers with view()
+   timelines get a scroll-linked rise instead. Elements ship
+   hidden-then-revealed only when JS is present, so content can
+   never be stranded invisible.
+=========================== */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal="left"] {
+  transform: translate3d(-24px, 0, 0);
+}
+
+.js [data-reveal="scale"] {
+  transform: translate3d(0, 18px, 0) scale(0.97);
+}
+
+/* A revealed element must not keep overriding a hover transform.
+   Same specificity as `.pill:hover`, won by source order. */
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.pill:hover {
+  transform: translate3d(0, -2px, 0);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent);
+}
+
+/* ===========================
+   Hero entrance + typewriter
+=========================== */
+
+/* Words are wrapped in spans and rise out of an overflow-hidden
+   mask. Word-level (not character-level) so the proportional Inter
+   glyphs never cause width jitter.
+
+   These are CSS animations rather than transitions: an animation with
+   `both` fill applies its `from` state at style-resolution time, so the
+   hero is already hidden on the very first paint (no flash) and needs no
+   JS timing to reach its final state. With JS disabled the `.js` scope
+   never matches, so the plain text simply renders. */
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.hero-word > span {
+  display: inline-block;
+}
+
+.js .hero-word > span {
+  animation: hero-word-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--word-delay, 0ms);
+}
+
+@keyframes hero-word-rise {
+  from {
+    transform: translate3d(0, 110%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Typed role line. Mono + a blinking block caret reads as a
+   terminal, which suits a backend engineer's site. */
+.type-line {
+  font-family: var(--font-mono);
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.12em;
+  vertical-align: text-bottom;
+  background: var(--accent);
+}
+
+.caret.is-blinking {
+  animation: caret-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The about paragraph and hero actions follow the headline in. */
+.js .enter-rise {
+  animation: enter-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===========================
+   Ambient drift
+=========================== */
+
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3rem, 2rem, 0) scale(1.06);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.04);
+  }
+  50% {
+    transform: translate3d(-3rem, -2rem, 0) scale(1);
+  }
+}
+
+/* ===========================
+   Project cards
+   Layered depth: a lift, a pointer-tracked spotlight, a gradient
+   hairline that draws across the top edge, and an image zoom.
+   Tilt is capped low and only on fine pointers.
+=========================== */
+
+.card {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease, box-shadow 0.5s ease;
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+.card.is-tilting {
+  transition: transform 0.12s linear, border-color 0.4s ease,
+    box-shadow 0.5s ease;
+}
+
+/* Pointer spotlight. `--mx`/`--my` are registered non-inheriting, so
+   moving them invalidates only this card. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    22rem circle at var(--mx) var(--my),
+    rgba(242, 135, 5, 0.13) 0%,
+    transparent 60%
+  );
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Gradient hairline that draws in from the centre on hover */
+.card__hairline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 2;
+  transform: scaleX(0);
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent) 35%,
+    var(--accent-active) 65%,
+    transparent
+  );
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .card__hairline {
+  transform: scaleX(1);
+}
+
+.card__media {
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .card__media img {
+  transform: scale(1.05);
+}
+
+.card__body {
+  position: relative;
+  z-index: 3;
+}
+
+/* Technology pills inside cards behave the same as the skills pills.
+   `inline-block` matters: `transform` is ignored on inline boxes. */
+.pill {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+
+/* ===========================
+   Technology ticker
+   A small duplicated track (~10 pills) — deliberately not a
+   hundreds-of-nodes marquee, which would create an enormous layer.
+=========================== */
+
+.ticker {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.15rem 0;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.ticker__track {
+  display: flex;
+  width: max-content;
+  gap: 2.5rem;
+  will-change: transform;
+  animation: ticker-scroll 34s linear infinite;
+}
+
+.ticker:hover .ticker__track,
+.ticker.is-paused .ticker__track {
+  animation-play-state: paused;
+}
+
+.ticker__item {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ticker__dot {
+  height: 4px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ===========================
+   Distributed-systems motif
+   A small node/edge graph: edges "draw" themselves via
+   stroke-dashoffset, nodes pulse via opacity/scale. Pure SVG+CSS.
+=========================== */
+
+.motif {
+  width: 100%;
+  max-width: 15rem;
+  height: auto;
+  overflow: visible;
+}
+
+.motif__edge {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  fill: none;
+  stroke-dasharray: var(--len, 200);
+  stroke-dashoffset: var(--len, 200);
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--edge-delay, 0ms);
+}
+
+/* Draws when the section scrolls into view (the motif sits well
+   below the fold, so a load-time animation would finish unseen). */
+.is-visible .motif__edge {
+  stroke-dashoffset: 0;
+}
+
+.motif__node {
+  fill: var(--accent);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.motif__node--pulse {
+  animation: node-pulse 2.6s ease-in-out infinite;
+  animation-delay: var(--node-delay, 0ms);
+}
+
+.motif__ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.35;
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: node-ring 2.6s ease-out infinite;
+  animation-delay: var(--node-delay, 0ms);
+}
+
+@keyframes node-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+
+@keyframes node-ring {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+/* ===========================
+   404 scramble + terminal
+=========================== */
+
+.glitch {
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  font-variant-ligatures: none;
+}
+
+.glitch .glyph {
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+/* ===========================
+   Theme ink-wipe
+   Runs only when JS explicitly starts a view transition for the
+   theme change, so it can never interfere with page navigation.
+=========================== */
+
+.theme-wipe::view-transition-old(root),
+.theme-wipe::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+.theme-wipe::view-transition-old(root) {
+  z-index: 1;
+}
+
+.theme-wipe::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-wipe-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes theme-wipe-in {
+  from {
+    clip-path: circle(0% at var(--wipe-x, 50%) var(--wipe-y, 0%));
+  }
+  to {
+    clip-path: circle(140% at var(--wipe-x, 50%) var(--wipe-y, 0%));
+  }
+}
+
+/* ===========================
+   Page transitions
+   `ClientRouter` is already enabled for the fast SPA-style
+   navigation. These classes restyle its own root cross-fade so the
+   change feels deliberate rather than a plain swap. Blog pages are
+   intentionally left on the default fade.
+   NOTE: `fade-in` must live on <html> — ::view-transition-old/new
+   pseudos belong to the document, so a class on <body> would never
+   match them and the custom fade would silently fall back.
+=========================== */
+
+.fade-in::view-transition-old(root) {
+  animation: site-fade-out 0.28s ease both;
+}
+
+.fade-in::view-transition-new(root) {
+  animation: site-fade-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes site-fade-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes site-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+/* ===========================
+   Reduced motion
+   One switch: everything decorative stops, and reveals resolve to
+   their final state so nothing is ever stuck hidden.
+=========================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-reveal],
+  .js [data-reveal="left"],
+  .js [data-reveal="scale"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .js .hero-word > span {
+    animation: none !important;
+    transform: none;
+  }
+
+  .js .enter-rise {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .ambient__glow--a,
+  .ambient__glow--b,
+  .cursor-aura,
+  .ticker__track,
+  .motif__node--pulse,
+  .motif__ring,
+  .caret.is-blinking,
+  .fade-in::view-transition-old(root),
+  .fade-in::view-transition-new(root),
+  .theme-wipe::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  .motif__edge {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
 }
 
 /* ===========================

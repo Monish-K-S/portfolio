@@ -17,6 +17,8 @@ export interface Project {
   demo?: string;
   technologies: string[];
   image?: string;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export interface BlogPost {
