@@ -803,6 +803,8 @@ p {
    Theme ink-wipe
    Runs only when JS explicitly starts a view transition for the
    theme change, so it can never interfere with page navigation.
+   The `fade-in` rules below are excluded while `.theme-wipe` is set;
+   see the note there about selector precedence.
 =========================== */
 
 .theme-wipe::view-transition-old(root),
@@ -840,11 +842,15 @@ p {
    match them and the custom fade would silently fall back.
 =========================== */
 
-.fade-in::view-transition-old(root) {
+/* `:not(.theme-wipe)` is load-bearing: the ink-wipe selectors above have
+   the exact same specificity as these, so without it the later page-fade
+   rules would win on any page that has `fade-in` (everything except the
+   blog routes) and the theme transition would silently become a fade. */
+.fade-in:not(.theme-wipe)::view-transition-old(root) {
   animation: site-fade-out 0.28s ease both;
 }
 
-.fade-in::view-transition-new(root) {
+.fade-in:not(.theme-wipe)::view-transition-new(root) {
   animation: site-fade-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
