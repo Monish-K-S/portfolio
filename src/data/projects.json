@@ -1,14 +1,41 @@
+
 [
+  {
+    "title": "Sourcify - AI-Powered Business Requirements Document Generation",
+    "image": "/projects/sourcify-system-architecture.svg",
+    "imageWidth": 1598,
+    "imageHeight": 576,
+    "description": "Engineered an AI-assisted BRD generation platform that transforms fragmented business information from emails, meeting transcripts, and documents into structured Business Requirements Documents. Designed a multi-source ingestion and document processing pipeline using FastAPI, Sarvam Document AI, and Google Gemini 2.5 Flash, combining document extraction with contextual AI synthesis to automate requirement gathering. Integrated Gmail and Google Drive to streamline business analysts' workflows, with a React-based interface for reviewing, refining, and generating professional BRDs.",
+    "highlights": [
+      "Multi-Source Data Ingestion",
+      "Hybrid AI Architecture",
+      "Automated BRD Generation",
+      "Context-Aware Requirement Synthesis"
+    ],
+    "technologies": [
+      "Python",
+      "FastAPI",
+      "React",
+      "TypeScript",
+      "Supabase",
+      "PostgreSQL",
+      "SQLAlchemy",
+      "Sarvam Document AI",
+      "Gmail & Drive API"
+    ],
+    "github": "https://github.com/Monish-K-S/brd-agent"
+  },
   {
     "title": "Real-Time Log Analytics & Observability Platform",
     "image": "/projects/log-analytics-architecture.png",
     "imageWidth": 1536,
     "imageHeight": 1024,
-    "description": "Built a distributed observability platform that ingests, processes, indexes, and visualizes streaming application logs in real time using Apache Kafka, Spring Boot, PostgreSQL, Lucene, and Grafana.",
+    "description": "Developed a distributed, event-driven observability platform that captures and processes streaming application logs through Apache Kafka and Spring Boot. Implemented a real-time log processing pipeline with PostgreSQL for persistent storage and Apache Lucene for full-text search, enabling efficient log retrieval and service-level analysis. Integrated Grafana for operational dashboards and Docker for containerized deployment, demonstrating the design of scalable backend systems and asynchronous data processing workflows.",
     "highlights": [
-      "Event-Driven Architecture",
-      "Observability",
-      "Full-Text Search"
+      "Event-Driven Microservices",
+      "Real-Time Stream Processing",
+      "Full-Text Log Search",
+      "Operational Observability"
     ],
     "technologies": [
       "Java",
@@ -22,32 +49,14 @@
     "github": "https://github.com/Monish-K-S/log_analytics_platform"
   },
   {
-    "title": "PulseDrop - Minimal Real-Time Incident Reporting System",
-    "image": "/projects/pulsedrop-system-architecture.png",
-    "imageWidth": 1598,
-    "imageHeight": 576,
-    "description": "Built a secure full-stack incident management system featuring JWT authentication, role-based authorization, ownership validation, and a layered Spring Boot architecture with a React frontend.",
+    "title": "VoltStream - EV Charging Risk Analytics Lakehouse",
+    "description": "Designed an end-to-end data engineering pipeline that integrates EV charging station and weather datasets to derive actionable insights into charging infrastructure risk. Implemented a Medallion Architecture on Databricks using PySpark and Delta Lake, transforming raw data into curated analytical datasets. Applied Slowly Changing Dimension Type 2 (SCD Type 2) to preserve historical changes and developed business-ready analytics for downstream visualization and decision-making.",
     "highlights": [
-      "JWT Authentication",
-      "Role-Based Authorization",
-      "Ownership Validation"
+      "End-to-End Lakehouse Pipeline",
+      "Medallion Architecture",
+      "Historical Data Tracking with SCD Type 2",
+      "Business-Ready Risk Analytics"
     ],
-    "technologies": [
-      "Java",
-      "Spring Boot",
-      "Spring Security",
-      "JWT",
-      "PostgreSQL",
-      "React",
-      "TypeScript",
-      "Axios"
-    ],
-    "github": "https://github.com/Monish-K-S/PulseDrop"
-  },
-  {
-    "title": "VoltStream",
-    "description": "Designed an end-to-end lakehouse data pipeline that ingests EV charging station and weather data, implements a Medallion Architecture with Delta Lake, and produces business-ready risk analytics.",
-    "highlights": ["Medallion Architecture", "SCD Type 2", "Delta Lake"],
     "technologies": [
       "PySpark",
       "Databricks",
